@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 
 def standard_atmosphere(z):
 
+    # constants for standard atmosphere model
     g = 9.806 # m/(s^2)
     Ts = 288.16 # deg K @ sea level
     Ps = 1.01325E5 # Pascals at sea level
@@ -14,6 +15,7 @@ def standard_atmosphere(z):
     rho11 = 0.3639
     rho25 = 0.0400
 
+    # standard atmosphere model
     if z <= 11000:
         a = -6.5E-3 # K/m
         temperature = Ts + a*z
@@ -23,7 +25,7 @@ def standard_atmosphere(z):
         temperature = 216.6 # isothermal region
         pressure = P11*(np.exp(-(g/(R*temperature))*(z - 11000)))
         density = rho11*(np.exp(-(g/(R*216.66))*(z - 11000)))
-    elif z > 25000 and z <= 47000:
+    elif z > 25000: # and z <= 47000:
         a = 3E-3
         temperature = 216.66 + a*(z - 25000)
         pressure = P25*((temperature/216.66)**((-g)/(a*R)))
@@ -33,27 +35,46 @@ def standard_atmosphere(z):
 
 
 def training():
-    # temperature
 
-    # density
-    return
+    # generate (x, y) training data pairs for the standard atmosphere model
+    max = 47000
+    step = 1000
+    size = int(max/step)
+
+    xt_temperature = np.zeros(size)
+    xt_pressure = np.zeros(size)
+    xt_density = np.zeros(size)
+
+    yt_temperature = np.zeros(size)
+    yt_pressure = np.zeros(size)
+    yt_density = np.zeros(size)
+    index = 0
+    for z in range(0,max,step):
+        xt_temperature[index] = 1*z
+        xt_pressure[index] = 1*z
+        xt_density[index] = 1*z
+
+        t,p,r = standard_atmosphere(z)
+        yt_temperature[index] = 1*t
+        yt_pressure[index] = 1*p
+        yt_density[index] = 1*r
+
+        index += 1
+
+    return xt_temperature, xt_pressure, xt_density, yt_temperature, yt_pressure, yt_density
 
 def surrogate():
 
     return
 
 
-# temperature model test
-max = 40000
-t = np.zeros(max)
-p = np.zeros(max)
-r = np.zeros(max)
-for i in range(0,max):
-    t[i],p[i],r[i] = standard_atmosphere(i)
+xt_t,xt_p,xt_d,yt_t,yt_p,yt_d = training()
 
-plt.plot(t)
+plt.plot(xt_t,yt_t)
 plt.show()
-plt.plot(p)
+
+plt.plot(xt_p,yt_p)
 plt.show()
-plt.plot(r)
+
+plt.plot(xt_d,yt_d)
 plt.show()
