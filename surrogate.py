@@ -16,6 +16,7 @@ def standard_atmosphere(z):
     rho25 = 0.0400
 
     # standard atmosphere model
+    # through 47000 m  or 154000 ft
     if z <= 11000:
         a = -6.5E-3 # K/m
         temperature = Ts + a*z
