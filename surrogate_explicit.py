@@ -1,4 +1,3 @@
-import numpy as np
 import csdl
 import python_csdl_backend
 from surrogate import sm_p, sm_d
@@ -53,11 +52,11 @@ class AtmExplicit(csdl.CustomExplicitOperation):
 
 
 # run model
-sim = python_csdl_backend.Simulator(Atm(alt=100))
+sim = python_csdl_backend.Simulator(Atm(alt=20000))
 sim.run()
 
 print(sim['pressure'])
 print(sim['density'])
 
 # print partials
-sim.check_partials(compact_print=True)
+# sim.check_partials(compact_print=True)

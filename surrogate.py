@@ -10,13 +10,13 @@ def standard_atmosphere(z):
     Ps = 1.01325E5 # Pascals at sea level
     rhoS = 1.225 # kg/m^3 at sea level
     R = 287 # J/(Kg-K) gas constant
-    P11 = 2.2629E04
-    P25 = 2.4879E03
-    rho11 = 0.3639
-    rho25 = 0.0400
+    P11 = 2.2629E04 # pressure @ 11km
+    P25 = 2.4879E03 # pressure @ 25km
+    rho11 = 0.3639 # density @ 11km
+    rho25 = 0.0400 # density @ 25km
 
     # standard atmosphere model
-    # through 47000 m  or 154000 ft
+    # through 47000 m / 154000 ft
     if z <= 11000:
         a = -6.5E-3 # K/m
         temperature = Ts + a*z
@@ -26,7 +26,7 @@ def standard_atmosphere(z):
         temperature = 216.6 # isothermal region
         pressure = P11*(np.exp(-(g/(R*temperature))*(z - 11000)))
         density = rho11*(np.exp(-(g/(R*216.66))*(z - 11000)))
-    elif z > 25000: # and z <= 47000:
+    elif z > 25000 and z <= 47000:
         a = 3E-3
         temperature = 216.66 + a*(z - 25000)
         pressure = P25*((temperature/216.66)**((-g)/(a*R)))
@@ -36,10 +36,9 @@ def standard_atmosphere(z):
 
 
 def training():
-
     # generate (x, y) training data pairs for the standard atmosphere model
-    max = 47000
-    step = 1000
+    max = 47000 # max altitude for atmospheric model
+    step = 1000 # training data step size
     size = int(max/step)
 
     xt_pressure = np.zeros(size)
@@ -89,12 +88,12 @@ yp = sm_p.predict_values(x)
 yd = sm_d.predict_values(x)
 
 plt.plot(x, yp)
-plt.xlabel("x")
-plt.ylabel("y")
+plt.xlabel("altitude (m)")
+plt.ylabel("pressure (Pa)")
 plt.show()
 
 plt.plot(x, yd)
-plt.xlabel("x")
-plt.ylabel("y")
+plt.xlabel("altitude (m)")
+plt.ylabel("density (kg/m^3)")
 plt.show()
 """
