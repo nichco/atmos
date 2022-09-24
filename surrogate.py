@@ -1,4 +1,4 @@
-from smt.surrogate_models import RMTB
+from smt.surrogate_models import RMTB, RBF
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -34,6 +34,7 @@ def standard_atmosphere(z):
     return temperature, pressure, density
 
 
+
 def training():
 
     # generate (x, y) training data pairs for the standard atmosphere model
@@ -48,33 +49,52 @@ def training():
     yt_temperature = np.zeros(size)
     yt_pressure = np.zeros(size)
     yt_density = np.zeros(size)
+
     index = 0
     for z in range(0,max,step):
         xt_temperature[index] = 1*z
         xt_pressure[index] = 1*z
         xt_density[index] = 1*z
 
-        t,p,r = standard_atmosphere(z)
+        t,p,d = standard_atmosphere(z)
         yt_temperature[index] = 1*t
         yt_pressure[index] = 1*p
-        yt_density[index] = 1*r
+        yt_density[index] = 1*d
 
         index += 1
 
     return xt_temperature, xt_pressure, xt_density, yt_temperature, yt_pressure, yt_density
 
-def surrogate():
 
-    return
+def create_surrogate():
+    # get training data
+    xt_t,xt_p,xt_d,yt_t,yt_p,yt_d = training()
+    # train RBF pressure surrogate
+    sm_p = RBF(d0=10000,print_global=False,print_solver=False,)
+    sm_p.set_training_values(xt_p, yt_p)
+    sm_p.train()
+    # train RBF density surrogate
+    sm_d = RBF(d0=10000,print_global=False,print_solver=False,)
+    sm_d.set_training_values(xt_d, yt_d)
+    sm_d.train()
 
+    return sm_p, sm_d
 
-xt_t,xt_p,xt_d,yt_t,yt_p,yt_d = training()
+sm_p,sm_d = create_surrogate() # create surrogate model
 
-plt.plot(xt_t,yt_t)
+num = 1000
+x = np.linspace(0.0, 47000.0, num)
+yp = sm_p.predict_values(x)
+yd = sm_d.predict_values(x)
+
+plt.plot(x, yp)
+plt.xlabel("x")
+plt.ylabel("y")
+plt.legend(["Training data", "Prediction"])
 plt.show()
 
-plt.plot(xt_p,yt_p)
-plt.show()
-
-plt.plot(xt_d,yt_d)
+plt.plot(x, yd)
+plt.xlabel("x")
+plt.ylabel("y")
+plt.legend(["Training data", "Prediction"])
 plt.show()
