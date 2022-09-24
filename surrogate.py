@@ -64,10 +64,12 @@ def training():
 def create_surrogate():
     # get training data
     xt_p,xt_d,yt_p,yt_d = training()
+    
     # train RBF pressure surrogate
     sm_p = RBF(d0=10000,print_global=False,print_solver=False,)
     sm_p.set_training_values(xt_p, yt_p)
     sm_p.train()
+
     # train RBF density surrogate
     sm_d = RBF(d0=10000,print_global=False,print_solver=False,)
     sm_d.set_training_values(xt_d, yt_d)
@@ -77,6 +79,7 @@ def create_surrogate():
 
 sm_p,sm_d = create_surrogate() # create surrogate model
 
+"""
 num = 1000
 x = np.linspace(0.0, 47000.0, num)
 yp = sm_p.predict_values(x)
@@ -91,3 +94,4 @@ plt.plot(x, yd)
 plt.xlabel("x")
 plt.ylabel("y")
 plt.show()
+"""
