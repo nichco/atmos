@@ -64,7 +64,7 @@ def training():
 def create_surrogate():
     # get training data
     xt_p,xt_d,yt_p,yt_d = training()
-    
+
     # train RBF pressure surrogate
     sm_p = RBF(d0=10000,print_global=False,print_solver=False,)
     sm_p.set_training_values(xt_p, yt_p)
@@ -77,7 +77,9 @@ def create_surrogate():
 
     return sm_p, sm_d
 
-sm_p,sm_d = create_surrogate() # create surrogate model
+
+# create surrogate models for pressure and density upon initial import
+sm_p,sm_d = create_surrogate()
 
 """
 num = 1000
