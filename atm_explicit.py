@@ -11,6 +11,8 @@ class Atm(csdl.Model):
 
         altitude = self.create_input('altitude', val=alt)
 
+        # altitude = self.declare_variable('altitude')
+
         # custom operation insertion
         p, d = csdl.custom(altitude, op=AtmExplicit())
 
